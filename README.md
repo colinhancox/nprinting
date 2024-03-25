@@ -60,3 +60,10 @@ QlikView document needs to have a table created with the dimensions name and typ
 QlikView document needs to have a button that runs the exportSelections macro.  If you want to disable the button until a different selection is made, create a called vExportedLatest and set the button's Enable condition set to vExportedLatest = 0.  The button should have an action to set vExportedLatest to 1.  Add an onAnySelect trigger in Document Properties to set vExportedLatest to 0 when selections change (to reenable the button).
 
 QlikView document can have a text box containing a message saying that the report has been generated and will be saved to the relevant folder, only shown when vExportedLatest =1.
+
+NPrintingParameters.txt must exist in the same folder as RunNPrinting.ps1, with contents in the following format:
+
+server,selectionsfolder,appId,connectionId,filterId,filterName,taskId
+https://<NPrintingServer>:4993,<NPrintingSelectionsFolder>,c6a927cf-ec08-4374-99cf-e734fadd87be,73b63e50-cfa0-4c7c-8208-28584ce6935c,f1f1f5b1-79fa-4d2b-8724-b609f0daf12e,Generic,50089a1c-a6d4-4752-8623-fad23a544ca9
+
+<NPrintingSelectionsFolder> has the same value as vSelectionsPath in the macro.
