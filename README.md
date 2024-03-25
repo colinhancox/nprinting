@@ -64,6 +64,6 @@ QlikView document can have a text box containing a message saying that the repor
 NPrintingParameters.txt must exist in the same folder as RunNPrinting.ps1, with contents in the following format:
 
 server,selectionsfolder,appId,connectionId,filterId,filterName,taskId
-https://NPrintingServer:4993,NPrintingSelectionsFolder,c6a927cf-ec08-4374-99cf-e734fadd87be,73b63e50-cfa0-4c7c-8208-28584ce6935c,f1f1f5b1-79fa-4d2b-8724-b609f0daf12e,Generic,50089a1c-a6d4-4752-8623-fad23a544ca9
+NPrintingServer:4993,NPrintingSelectionsFolder,c6a927cf-ec08-4374-99cf-e734fadd87be,73b63e50-cfa0-4c7c-8208-28584ce6935c,f1f1f5b1-79fa-4d2b-8724-b609f0daf12e,Generic,50089a1c-a6d4-4752-8623-fad23a544ca9
 
 NPrintingSelectionsFolder has the same value as vSelectionsPath in the macro.
