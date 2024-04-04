@@ -1,11 +1,11 @@
 # nprinting
-This project enables a user to make selections in a published QlikView document and then click a button that exports a text file containing those selections, which is then used to update an NPrinting filter and run an NPrinting task that uses that filter.  That task can then email reports or save reports to a network folder, actions which are not available from the standard On-Demand reporting extension.
+This project enables a user to make selections in a published QlikView document and then click a button that exports a text file containing those selections, which is then used to update an NPrinting filter and run an NPrinting task that applies that filter to a report.  That task can then email reports or save reports to a network folder, actions which are not available from the standard On-Demand reporting extension.
 
 The basic setup is:
 - define the fields that can be selected in the load script
 - include a macro in the QlikView document that exports those selections as a text file
 - have some mechanism that runs the Powershell script, either on a schedule or by using a filewatcher to watch for the selections file
-- the Powershell script runs, loops through all of the selections files, updating the filter and running the task.  On completion of each loop it deletes the selections file.
+- the Powershell script runs, loops through all of the selections files, updating the filter and running the task.  On completion of each loop it deletes the selections file
 
 There are two versions of the Powershell script to call the NPrinting API, one includes a certificate bypass for testing where the NPrinting server certificate is not setup correctly.  This should not be implemented in production.
 
