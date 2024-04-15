@@ -84,7 +84,9 @@ foreach ($file in $files) {
         Write-Output "Filter update API returned an error. The file will not be deleted."
         continue
     }
-
+    
+    Start-Sleep -Seconds 5
+    
     # Run a publish task
     $url = "$server/api/v1/tasks/$taskId/executions"
     try {
