@@ -99,6 +99,8 @@ foreach ($file in $files) {
         continue
     }
 
+    Start-Sleep -Seconds 5
+    
     # Run a publish task
     $url = "$server/api/v1/tasks/$taskId/executions"
     try {
