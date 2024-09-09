@@ -1,0 +1,78 @@
+if upper('$(vEnv)') = 'DEV' then
+Set vSelectionsPath = 'E:\_QVDEV\FinanceExplain\Phoenix\MonthEnd_PnL\5.NPrinting\Selections';
+Set vNPParametersPath = 'E:\_QVDEV\FinanceExplain\Phoenix\MonthEnd_PnL\5.NPrinting\Scripts';
+elseif upper('$(vEnv)') = 'DIT' then
+Set vSelectionsPath = '\\reports-portal\QlikView$\Source Documents\Phoenix\MonthEnd_PnL\5.NPrinting\Selections';
+Set vNPParametersPath = '\\reports-portal\QlikView$\Source Documents\Phoenix\MonthEnd_PnL\5.NPrinting\Scripts';
+elseif upper('$(vEnv)') = 'UAT' then
+Set vSelectionsPath = '\\reports-portal\QlikView$\Source Documents\Phoenix\MonthEnd_PnL\5.NPrinting\Selections';
+Set vNPParametersPath = '\\reports-portal\QlikView$\Source Documents\Phoenix\MonthEnd_PnL\5.NPrinting\Scripts';
+elseif upper('$(vEnv)') = 'PROD' then
+Set vSelectionsPath = '\\reports-portal\QlikView$\Source Documents\Phoenix\MonthEnd_PnL\5.NPrinting\Selections';
+Set vNPParametersPath = '\\reports-portal\QlikView$\Source Documents\Phoenix\MonthEnd_PnL\5.NPrinting\Scripts';
+
+end if
+
+Set vExportedLatest = 0;	// if adding to a new app, set up a document trigger, on any select, to reset this variable to 0
+Set vReportsRun = 0;
+Set vParentDeskName = '=only(ParentDeskName)';
+Set vNPrintingUser = '';
+Set vNPTaskId = '=only(%NPTaskId)';
+
+//  list all fields that can be passed to NPrinting as selections here.  type can be text or number
+NPrintingSelections:
+load * inline [
+name, 						type
+ParentDeskName, 			text
+NumBusinessMonth, 			number
+GLSetOfBookCode, 			number
+ReportGroup, 				text
+];
+
+fields1:
+LOAD 
+    Concat(chr(39) & name & chr(39), ', ') as Field1,
+    Concat(chr(34) & name & chr(34), ', ') as Field2
+resident NPrintingSelections;
+
+let vField1 = FieldValue('Field1', 1);
+let vField2 = FieldValue('Field2', 1);
+
+set vSelectableFields = pick(match(name, $(vField1)), $(vField2));
+
+drop Table fields1;
+
+if match(upper('$(vEnv)'), 'DEV', 'DIT') then
+
+NPrintingReports:
+load * inline [
+%NPServer,																%NPAppId,								%NPConnectionId, 						%NPrintingReports, 								%NPFilterId,							%NPFilterName, 			%NPTaskId,  
+https://reports-portal-nprinting.tsydev.treasury.westpac.com.au:4993,	ae1cdec6-5ab5-414f-8249-4122119ee077,	9cf51eed-d27d-44dc-ba82-dd9d9e78abbc,	PnL by Product ,								8ae9e20d-48af-4750-9875-ec89e0b2574d,	MonthEndPNLFilters,		95ba80a5-df82-49cc-90a1-70b123bd8772
+https://reports-portal-nprinting.tsydev.treasury.westpac.com.au:4993,	ae1cdec6-5ab5-414f-8249-4122119ee077,	9cf51eed-d27d-44dc-ba82-dd9d9e78abbc,	PnL by Desk and Portfolio,						8ae9e20d-48af-4750-9875-ec89e0b2574d,	MonthEndPNLFilters,		560dbc86-10f3-4b52-8101-5e8c9206a309
+https://reports-portal-nprinting.tsydev.treasury.westpac.com.au:4993,	ae1cdec6-5ab5-414f-8249-4122119ee077,	9cf51eed-d27d-44dc-ba82-dd9d9e78abbc,	PnL by Location and Desk,						8ae9e20d-48af-4750-9875-ec89e0b2574d,	MonthEndPNLFilters,		e792d4da-8ca8-4215-840c-f57f9c3661fb
+https://reports-portal-nprinting.tsydev.treasury.westpac.com.au:4993,	ae1cdec6-5ab5-414f-8249-4122119ee077,	9cf51eed-d27d-44dc-ba82-dd9d9e78abbc,	PnL by Desk and Trading Flag,					8ae9e20d-48af-4750-9875-ec89e0b2574d,	MonthEndPNLFilters,		d30f32cd-a45c-44ca-9528-4857b1a44722
+];
+
+elseif match(upper('$(vEnv)'), 'UAT') then
+
+NPrintingReports:
+load * inline [
+%NPServer,																%NPAppId,								%NPConnectionId, 						%NPrintingReports, 								%NPFilterId,							%NPFilterName, 			%NPTaskId,  
+https://nprintwebconsole.tsyuat.treasury.westpac.com.au:4993,			50f00bb5-a511-46dd-9181-0e745698c0e0,	0f53d687-7b22-4f69-88fa-bf6e27fea894,	PnL by Product ,								10696515-5cfa-4c5f-8c99-6efa31410d82,	MonthEndPNLFilters,		b8e71dda-6625-4c69-b09b-4c9e560d91d5
+https://nprintwebconsole.tsyuat.treasury.westpac.com.au:4993,			50f00bb5-a511-46dd-9181-0e745698c0e0,	0f53d687-7b22-4f69-88fa-bf6e27fea894,	PnL by Desk and Portfolio,						10696515-5cfa-4c5f-8c99-6efa31410d82,	MonthEndPNLFilters,		e34ba041-ab6f-4e69-9535-c80df7656e71
+https://nprintwebconsole.tsyuat.treasury.westpac.com.au:4993,			50f00bb5-a511-46dd-9181-0e745698c0e0,	0f53d687-7b22-4f69-88fa-bf6e27fea894,	PnL by Location and Desk,						10696515-5cfa-4c5f-8c99-6efa31410d82,	MonthEndPNLFilters,		76f32464-64c6-4252-845a-40dd91f06b6f
+https://nprintwebconsole.tsyuat.treasury.westpac.com.au:4993,			50f00bb5-a511-46dd-9181-0e745698c0e0,	0f53d687-7b22-4f69-88fa-bf6e27fea894,	PnL by Desk and Trading Flag,					10696515-5cfa-4c5f-8c99-6efa31410d82,	MonthEndPNLFilters,		0421a90f-c488-48da-b742-6d9a1e6fb2a7
+];
+
+elseif match(upper('$(vEnv)'), 'PROD') then
+
+NPrintingReports:
+load * inline [
+%NPServer,																%NPAppId,								%NPConnectionId, 						%NPrintingReports, 								%NPFilterId,							%NPFilterName, 			%NPTaskId,  
+https://nprintwebconsole.tsyprod.treasury.westpac.com.au:4993,			e735f514-aa2a-4528-bf67-7ca54e6b83ed,	5530b548-26cf-479a-937a-20acacbad27d,	PnL by Product ,								fd47bb77-381b-45f1-aa3d-0f3883e10503,	MonthEndPNLFilters,		67626d13-9383-4b42-8f55-ed57c2f066c8
+https://nprintwebconsole.tsyprod.treasury.westpac.com.au:4993,			e735f514-aa2a-4528-bf67-7ca54e6b83ed,	5530b548-26cf-479a-937a-20acacbad27d,	PnL by Desk and Portfolio,						fd47bb77-381b-45f1-aa3d-0f3883e10503,	MonthEndPNLFilters,		4537e63d-ffd0-4eb1-9cdf-a15b86f256d3
+https://nprintwebconsole.tsyprod.treasury.westpac.com.au:4993,			e735f514-aa2a-4528-bf67-7ca54e6b83ed,	5530b548-26cf-479a-937a-20acacbad27d,	PnL by Location and Desk,						fd47bb77-381b-45f1-aa3d-0f3883e10503,	MonthEndPNLFilters,		568e97c9-30cb-48fd-ad28-59b26c92f352
+https://nprintwebconsole.tsyprod.treasury.westpac.com.au:4993,			e735f514-aa2a-4528-bf67-7ca54e6b83ed,	5530b548-26cf-479a-937a-20acacbad27d,	PnL by Desk and Trading Flag,					fd47bb77-381b-45f1-aa3d-0f3883e10503,	MonthEndPNLFilters,		477ffdd5-09aa-4dfd-80fd-16466ee1b91c
+];
+
+end if
